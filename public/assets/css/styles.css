@@ -281,7 +281,7 @@ img {
     color: var(--white-color);
 }
 
-.nav__link:hover::after{
+.nav__linkgit:hover::after{
     width: 25%;
 }
 
