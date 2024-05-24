@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css" crossorigin="" />
     <!--===============CSS===============-->
     <link rel="stylesheet" type="text/css" href="%PUBLIC_URL%assets/css/styles.css">
+    
     <script src="%PUBLIC_URL%assets/js/main.js"></script> 
 
     <title>React App!</title>
@@ -40,16 +41,19 @@
           <h3 class="nav__name">Rian</h3>
           <ul class="nav__list">
             <li class="nav__item">
-              <a href="#home" class="nav__link">Home</a>
+              <a href="#home" class="nav__link active-link">Home</a>
             </li>
             <li class="nav__item">
               <a href="#about" class="nav__link">About me</a>
             </li>
             <li class="nav__item">
+              <a href="#service" class="nav__link">Service</a>
+            </li>
+            <li class="nav__item">
               <a href="#projects" class="nav__link">Projects</a>
             </li>
             <li class="nav__item">
-              <a href="#contact" class="nav__link">Contact me</a>
+              <a href="#contact" class="nav__link nav__link-button">Contact me</a>
             </li>
           </ul>
           <!--Close Button-->
@@ -59,6 +63,8 @@
         </div>
 
         <div class="nav__button">
+          <!-- Theme button -->        
+          <i class="ri-contrast-2-fill change-theme" id="theme-button"></i>
           <!-- Toggle button -->
           <div class="nav__toggle" id="nav-toggle">
             <i class="ri-menu-5-line"></i>
@@ -296,6 +302,8 @@
                 <label for="message" class="contact__label">Message</label>
               </div>
 
+              <p class="contact__message" id="contact-message"></p>
+
               <button class="contact__button button">
                 <i class="ri-send-plane-fill"></i>Send message.
               </button>
@@ -327,6 +335,31 @@
         </div>
       </section>
     </main>
+
+    <!--=============== FOOTER ===============-->
+    <footer class="footer">
+      <div class="footer__container container grid">
+        <ul class="footer__links">
+          <li>
+            <a href="#home" class="footer__link">Home</a>
+          </li>
+          <li>
+            <a href="#about" class="footer__link">About</a>
+          </li>
+          <li>
+            <a href="#contact" class="footer__link">Contact</a>
+          </li>
+        </ul>
+        <span class="footer__copy">
+          &#169; All Rights Reserved by <a href="">Jam</a>
+        </span>
+      </div>
+    </footer>
+
+    <!--=============== SCROLL UP ===============-->
+    <a href="" class="scrollup" id="scroll-up">
+      <i class="ri-arrow-up-double-fill"></i>
+    </a>
 
   </body>
 </html>
