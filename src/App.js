@@ -1,159 +1,168 @@
-// import logo from './logo.svg';
-// import './App.css';
-import emailjs from '@emailjs/browser';
-import ScrollReveal from 'scrollreveal';
-
-/* ============ SHOW MENU ============ */
-const   navMenu = document.getElementById('nav-menu'),
-        navToggle = document.getElementById('nav-toggle'),
-        navClose = document.getElementById('nav-close')
-
-if (navToggle){
-    navToggle.addEventListener('click', () =>{
-        navMenu.classList.add('show-menu')
-    })
-}
-
-/* ============ HIDE MENU ============ */
-if(navClose){
-    navClose.addEventListener('click', () =>{
-        navMenu.classList.remove('show-menu')
-    })
-}
-
-/* ============ REMOVE ON MENU CLICK ============ */
-const navLink = document.querySelectorAll('.nav__link')
-const linkAction = () =>{
-  const navMenu = document.getElementById('nav-menu')
-  navMenu.classList.remove('show-menu')
-}
-navLink.forEach(n => n.addEventListener('click', linkAction))
-
-/* ============ REMOVE ON MENU CLICK ============ */
-const shadowHeader = () =>{
-  const header = document.getElementById('header')
-  window.scrollY >= 50 ? header.classList.add('shadow-header')
-                     : header.classList.remove('shadow-header')
-}
-window.addEventListener('scroll', shadowHeader)
+import React, { Component } from "react";
+import Modal from "./components/Modal";
+import axios from "axios";
+import Cookies from 'js-cookie'
 
 
-/* ============ EMAILJS ============ */
-const contactForm = document.getElementById('contact-form'),
-      contactMessage =document.getElementById('contact-message')
-
-const sendEmail = (e) => {
-  e.preventDefault()
-
-  /* serviceID- templateID - #form - publickey */
-  emailjs.sendForm('service_emailjsi2jh0ew','template_osjdfvj','#contact-form','0no3PwVVGchuQjK0m')
-  .then(() => {
-    contactMessage.textContent = 'Message sent successfully.'
-    setTimeout( () =>{
-      contactMessage.textContent = ''
-    }, 5000)
-    contactForm.reset()
-  }, () =>{
-    contactMessage.textContent = "Message not sent (service down)"
-  })
-}
-contactForm.addEventListener('submit', sendEmail)
+var csrftoken = Cookies.get('csrftoken');
 
 
-/* ============ SHOW SCROLL UP ============ */
-const scrollUp = () => {
-  const scrollUp = document.getElementById('scroll-up')
-  window.scrollY >= 350 ? scrollUp.classList.add('show-scroll')
-                        : scrollUp.classList.remove('show-scroll')
-}
-window.addEventListener('scroll', scrollUp)
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      viewCompleted: false,
+      todoList: [],
+      modal: false,
+      activeItem: {
+        title: "",
+        description: "",
+        completed: false,
+      },
+    };
+  }
 
-/* ============ SHOW SECTIONS ACTIVE LINK ============ */
-const sections = document.querySelectorAll('section[id]')
-console.log(sections)
-const scrollActive = () => {
-  const scrollDown = window.scrollY
+  componentDidMount() {
+    this.refreshList();
+  }
 
-  sections.forEach(current =>{
-    const sectionHeight = current.offsetHeight,
-          sectionTop = current.offsetTop  - 58,
-          sectionId = current.getAttribute('id'),
-          sectionsClass = document.querySelector('.nav__menu a[href*=' + sectionId + ']')
-    
+  refreshList = () => {
+    axios
+      .get("/api/todos/")
+      .then((res) => this.setState({ todoList: res.data }))
+      .catch((err) => console.log(err));
+  };
 
-    if (scrollDown > sectionTop && scrollDown <= sectionTop + sectionHeight){
-      sectionsClass.classList.add('active-link')
-    }else{
-      sectionsClass.classList.remove('active-link')
+  toggle = () => {
+    this.setState({ modal: !this.state.modal });
+  };
+
+  handleSubmit = (item) => {
+    this.toggle();
+
+    if (item.id) {
+      axios
+        .put(`/api/todos/${item.id}/`, item, { headers: { 'X-CSRFToken': csrftoken } })
+        .then((res) => this.refreshList());
+      return;
     }
-  })
-}
-window.addEventListener('scroll',scrollActive)
+    axios
+      .post("/api/todos/", item)
+      .then((res) => this.refreshList());
+  };
 
-/*============ LIGHT & DARK THEME ============*/
-const themeButton = document.getElementById('theme-button')
-const darkTheme = 'dark-theme'
-const iconTheme = 'ri-contrast-2-line'
+  handleDelete = (item) => {
+    axios
+      .delete(`/api/todos/${item.id}/`)
+      .then((res) => this.refreshList());
+  };
 
-const selectedTheme = localStorage.getItem('selected-theme')
-const selectedIcon = localStorage.getItem('selected-icon')
+  createItem = () => {
+    const item = { title: "", description: "", completed: false };
 
-const getCurrentTheme = () => document.body.classList.contains(darkTheme) ? 'dark' : 'light'
-const getCurrentIcon = () => themeButton.classList.contains(iconTheme) ? 'ri-contrast-2-fill' : 'ri-contrast-2-line'
+    this.setState({ activeItem: item, modal: !this.state.modal });
+  };
 
-if (selectedTheme){
-  document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](darkTheme)
-  themeButton.classList[selectedIcon === 'ri-contrast-2-fill' ? 'add' : 'remove'](iconTheme)
-}
+  editItem = (item) => {
+    this.setState({ activeItem: item, modal: !this.state.modal });
+  };
 
-themeButton.addEventListener('click', () => {
-  document.body.classList.toggle(darkTheme)
-  themeButton.classList.toggle(iconTheme)
+  displayCompleted = (status) => {
+    if (status) {
+      return this.setState({ viewCompleted: true });
+    }
 
-  localStorage.setItem('selected-theme', getCurrentTheme())
-  localStorage.setItem('selected-icon', getCurrentIcon())
-})
+    return this.setState({ viewCompleted: false });
+  };
 
-/*============ SCROLLREVEAL ============*/
-const sr = ScrollReveal({
-  origin: 'top',
-  distance: '60px',
-  duration: 2500,
-  delay: 400,
-  reset: true
-})
-sr.reveal(`.home__perfil, .about__image, .contact__mail`, {origin: 'right'})
-sr.reveal(`.home__name, .home__info,
-           .about__container .section__titile-1, .about__info
-           .contact__social, .contact__data`, {origin: 'left'})
+  renderTabList = () => {
+    return (
+      <div className="nav nav-tabs">
+        <span
+          onClick={() => this.displayCompleted(true)}
+          className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
+        >
+          Complete
+        </span>
+        <span
+          onClick={() => this.displayCompleted(false)}
+          className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
+        >
+          Incomplete
+        </span>
+      </div>
+    );
+  };
 
-sr.reveal(`.service__card, .projects__card`, {interval: 50})
+  renderItems = () => {
+    const { viewCompleted } = this.state;
+    const newItems = this.state.todoList.filter(
+      (item) => item.completed === viewCompleted
+    );
 
-/* ======================== App ======================== */
+    return newItems.map((item) => (
+      <li
+        key={item.id}
+        className="list-group-item d-flex justify-content-between align-items-center"
+      >
+        <span
+          className={`todo-title mr-2 ${
+            this.state.viewCompleted ? "completed-todo" : ""
+          }`}
+          title={item.description}
+        >
+          {item.title}
+        </span>
+        <span>
+          <button
+            className="btn btn-secondary mr-2"
+            onClick={() => this.editItem(item)}
+          >
+            Edit
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={() => this.handleDelete(item)}
+          >
+            Delete
+          </button>
+        </span>
+      </li>
+    ));
+  };
 
-function App() {
-  return (
-    <p>
-      Root
-    </p>
-
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
-  );
+  render() {
+    return (
+      <main className="container">
+        <h1 className="text-white text-uppercase text-center my-4">Todo app</h1>
+        <div className="row">
+          <div className="col-md-6 col-sm-10 mx-auto p-0">
+            <div className="card p-3">
+              <div className="mb-4">
+                <button
+                  className="btn btn-primary"
+                  onClick={this.createItem}
+                >
+                  Add task
+                </button>
+              </div>
+              {this.renderTabList()}
+              <ul className="list-group list-group-flush border-top-0">
+                {this.renderItems()}
+              </ul>
+            </div>
+          </div>
+        </div>
+        {this.state.modal ? (
+          <Modal
+            activeItem={this.state.activeItem}
+            toggle={this.toggle}
+            onSave={this.handleSubmit}
+          />
+        ) : null}
+      </main>
+    );
+  }
 }
 
 export default App;
