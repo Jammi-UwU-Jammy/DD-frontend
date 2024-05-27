@@ -13,15 +13,16 @@
     --black-color-light: hsl(0, 0%, 40%);
     --white-color: hsl(0, 0%, 95%);
     --title-color: hsl(0, 0%, 0%);
-    --text-color: hsl(0, 0%, 35%);
+    --text-color: hsl(0, 0%, 27%);
     --text-color-light: hsl(0, 0%, 64%);
     --body-color: hsl(0, 0%, 87%);
     --container-color: hsl(0, 0%, 83%);
+    --container-second-color: hsl(0, 0%, 80%);
   
     /*========== Font and typography ==========*/
     /*.5rem = 8px | 1rem = 16px ...*/
     --body-font: "Bai Jamjuree", sans-serif;
-    --biggest-font-size: 2.5rem;
+    --biggest-font-size: 3.5rem;
     --h1-font-size: 1.75rem;
     --h2-font-size: 1.25rem;
     --h3-font-size: 1.125rem;
@@ -113,6 +114,7 @@ body.dark-theme{
     --text-color: hsl(0, 0%, 70%);
     --body-color: hsl(0, 0%, 8%);
     --container-color: hsl(0, 0%, 12%);
+    --container-second-color: hsl(0, 0%, 10%);
 }
 
 .dark-theme .shadow-header{
@@ -130,12 +132,25 @@ body.dark-theme{
 
 .dark-theme .home__description b{
     background: linear-gradient(90deg,
-                                hsla(14, 80%, 50%, .3),
+                                hsla(161, 80%, 50%, 0.3),
                                 hsla(14, 80%, 50%, 0));
 }
 
-.dark-theme:is(.button__ghost, .service__icon i){
+.dark-theme:is(.button__ghost, .qualification__icon i){
     color: var(--white-color);
+}
+
+.dark-theme .button__ghost{
+    /* background-color: var(--white-color); */
+    filter: invert(1);
+}
+
+.dark-theme .qualification__icon i{
+    filter: invert(1);
+}
+
+.dark-theme :is(.education__title, .work__title, .qualification__subtitle){
+    color: var(--text-color);
 }
 
 .dark-theme .projects__card:hover{
@@ -178,6 +193,7 @@ body.dark-theme{
 .section__title-2 {
   position: relative;
   font-size: var(--h1-font-size);
+  font-weight: var(--font-bold);
   width: max-content;
   margin: .75rem auto 2rem;
 }
@@ -268,6 +284,18 @@ body.dark-theme{
 .nav__logo-circle{
     border-radius: 50%;
 }
+.nav__logo-circle:hover{
+    animation: spin 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+}
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .nav__toggle{
     font-size: 1.25rem;
     cursor: pointer;
@@ -383,10 +411,14 @@ body.dark-theme{
 }
 
 /*================== HOME ==================*/
+.home{
+    background-color: var(--container-color);
+}
 .home__container{
     padding-top: 2rem;
 }
 .home__name{
+    font-weight: var(--font-bold);
     font-size: var(--biggest-font-size);
     text-align: center;
 }
@@ -422,6 +454,7 @@ body.dark-theme{
     filter: invert(1);
     width: 50px;
     transition: filter .4s;
+    z-index: 11;
 }
 .home__arrow{
     left: 40%;
@@ -562,7 +595,7 @@ body.dark-theme{
 
 /*================== ABOUT ==================*/
 .about{
-    background-color: var(--container-color);
+    background-color: var(--container-second-color);
     transition: background-color .4s;
 }
 
@@ -609,9 +642,9 @@ body.dark-theme{
 
 .about__line{
     filter: invert(1);
-    right: -1.25rem;
+    right: -10rem;
     top: 6rem;
-    width: 50px;
+    width: 100px;
     transition: filter .4s;
 }
 
@@ -655,29 +688,33 @@ body.dark-theme{
     column-gap: 1rem;
 }
 
-/*================== SERVICE ==================*/
-.service_container{
+/*================== qualification ==================*/
+.qualification{
+    background-color: var(--container-color);
+}
+
+.qualification_container{
     grid-template-columns: 250px;
     justify-content: center;
     row-gap: 2rem;
     padding-top: 1rem;
 }
 
-.service__card{
+.qualification__card{
     position: relative;
 }
 
-.service__content{
+.qualification__content{
     height: 100%;
     background-color: var(--body-color);
     border: 4px solid var(--black-color);
-    padding: 6rem 1rem 3rem;
+    padding: 3rem 1rem 3rem;
     z-index: 5;
     position: relative;
     transition: background-color .4s, border .4s;
 }
 
-.service__border{
+.qualification__border{
     position: absolute;
     width: 100%;
     height: 100%;
@@ -687,23 +724,23 @@ body.dark-theme{
     transition: transform .4s;
 }
 
-.service__card:hover .service__border{
+.qualification__card:hover .qualification__border{
     transform: translate(.75rem, .75rem);
 }
 
-.service__icon{
+.qualification__icon{
     position: relative;
     display: inline-block;
 }
 
-.service__icon i{
+.qualification__icon i{
     font-size: 2rem;
     color: var(--black-color);
     position: relative;
     z-index: 5;
 }
 
-.service__box{
+.qualification__box{
     position: absolute;
     width: 24px;
     height: 24px;
@@ -712,15 +749,20 @@ body.dark-theme{
     top: -2px;
 }
 
-.service__title{
+.qualification__title{
     font-size: var(--h2-font-size);
     margin-bottom: 1.25rem;
+}
+
+.qualification__description{
+    color: var(--text-color);
+    padding-top: 2rem;
 }
 
 /*================== PROJECTS ==================*/
 
 .projects{
-    background-color: var(--container-color);
+    background-color: var(--container-second-color);
     transition: background-color .4s;
 }
 
@@ -805,8 +847,45 @@ body.dark-theme{
     background-color: var(--white-color);
 }
 
+.projects__description{
+    color: var(--text-color);
+}
+
+.projects__title-deco{
+    position: absolute;
+    top: -5rem;
+    left: -9rem;
+    filter: opacity(0.5) invert(1);
+}
+
+
+/*================== Qualifications ==================*/
+
+.qualification__subtitle{
+    font-size: var(--h2-font-size);
+    font-weight: var(--font-bold);
+    color: var(--black-color);
+}
+
+.education__title, .work__title{
+    font-size: var(--normal-font-size);
+    font-weight: var(--font-bold);
+    color: var(--black-color);
+}
+
+.qualification__country,
+.qualification__year{
+    display: block;
+    font-size: var(--small-font-size);
+    color: var(--text-color);
+}
 
 /*================== CONTACT ==================*/
+
+.contact{
+    background-color: var(--container-color);
+}
+
 .contact__container{
     position: relative;
     grid-template-rows: 300px max-content max-content;
@@ -1006,6 +1085,9 @@ body.dark-theme{
     bottom: -1.6rem;
     left: 0;
 }
+.contact__line{
+    filter: invert(1);
+}
 
 /*================== FOOTER ==================*/
 .footer{
@@ -1149,7 +1231,7 @@ body.dark-theme{
 }
 
 @media screen and (min-width: 768px) {
-    .service_container{
+    .qualification_container{
         grid-template-columns: repeat(2, 250px);
     }
     .projects__container{
@@ -1287,16 +1369,16 @@ body.dark-theme{
         top: 15rem;
     }
     .home__arrow{
-        top: 4.5rem;
+        top: -7rem;
         left: -8rem;
-        rotate: 80deg;
-        width: 80px;
+        rotate: 10deg;
+        width: 140px;
     }
     .home__line{
-        left: -15rem;
-        bottom: 4rem;
-        width: 80px;
-        rotate: 30deg;
+        left: -10rem;
+        bottom: 2rem;
+        width: 100px;
+        rotate: -50deg;
     }
     .home__social{
         left: initial;
@@ -1363,23 +1445,23 @@ body.dark-theme{
     .button__ghost i{
         font-size: 1.5rem;
     }
-    .service__container{
-        grid-template-columns: repeat(3, 282px);
+    .qualification__container{
+        grid-template-columns: repeat(2, 500px);
         column-gap: 5rem;
         padding-block: 3rem 5rem;
     }
-    .service__content{
+    .qualification__content{
         padding: 6.5rem 1.5rem 3.5rem;
         border: 6px solid var(--black-color);
     }
-    .service__icon i{
+    .qualification__icon i{
         font-size: 3rem;
     }
-    .service__box{
+    .qualification__box{
         width: 32px;
         height: 32px;
     }
-    .service__card:hover .service__border{
+    .qualification__card:hover .qualification__border{
         transform: translate(1.25rem, 1.25 rem);
     }
     .projects__container{
