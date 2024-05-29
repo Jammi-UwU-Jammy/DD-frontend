@@ -70,7 +70,6 @@ window.addEventListener('scroll', scrollUp)
 
 /* ============ SHOW SECTIONS ACTIVE LINK ============ */
 const sections = document.querySelectorAll('section[id]')
-console.log(sections)
 const scrollActive = () => {
   const scrollDown = window.scrollY
 
